@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using ConferenceAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConferenceAPI.Models;
+namespace ConferenceAPI.Data;
 
 public partial class DanaBazaDeDateContext : DbContext
 {

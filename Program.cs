@@ -1,4 +1,4 @@
-using ConferenceAPI.Models;
+using ConferenceAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
