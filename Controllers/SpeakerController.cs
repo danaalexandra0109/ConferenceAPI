@@ -79,16 +79,26 @@ namespace ConferenceAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteSpeaker(int id)
         {
-            var item = _context.Speakers.Include(i=>i.Feedbacks).Include(i=>i.ConferenceXspeakers).FirstOrDefault(i => i.Id == id);
-            if (item == null)
+            var speaker = _context.Speakers.Include(i=>i.Feedbacks).Include(i=>i.ConferenceXspeakers).FirstOrDefault(i => i.Id == id);
+            if (speaker == null)
             {
                 return NotFound();
             }
-            if (item.Feedbacks.Any())
+            if (speaker.Feedbacks.Any())
             {
-// pt fiecare feedback din lista asta sterge feedback-ul
+                foreach (var feedback in _context.Feedbacks)
+                {
+                    _context.Feedbacks.Remove(feedback);
+                }
             }
-            _context.Speakers.Remove(item);
+            if (speaker.ConferenceXspeakers.Any())
+            {
+                foreach (var conferencexspeakers in _context.ConferenceXspeakers)
+                {
+                    _context.ConferenceXspeakers.Remove(conferencexspeakers);
+                }
+            }
+            _context.Speakers.Remove(speaker);
             _context.SaveChanges();
             return Ok();
         }
@@ -96,15 +106,12 @@ namespace ConferenceAPI.Controllers
         [HttpGet("GetSpeakerRating")]
         public ActionResult <decimal> GetRating(int id)
         {
-            var item = _context.Speakers.FirstOrDefault(i => i.Id == id);
-            if (item == null)
+            var speaker = _context.Speakers.FirstOrDefault(i => i.Id == id);
+            if (speaker == null)
             {
                 return BadRequest("Input a valid ID!");
             }
-            var items = _context.Speakers.ToList(Rating);
-            return Ok();
+            return Ok(speaker.Rating);
         }
-
-
     }
 }
