@@ -44,7 +44,7 @@ namespace ConferenceAPI.Controllers
             {
                 return BadRequest("Please input a Conference!");
             }
-            if (feedbackReq.Rating == null)
+            if (string.IsNullOrWhiteSpace(feedbackReq.Rating.ToString()))
             {
                 return BadRequest("Please input your feedback rating for our speaker!");
             }
@@ -62,10 +62,12 @@ namespace ConferenceAPI.Controllers
             {
                 return BadRequest("The selected speaker does not exist.");
             }
-            var existingFeedback = _context.Feedbacks.FirstOrDefault(f =>
-                f.AttendeeEmail == feedbackReq.AttendeeEmail &&
-                f.ConferenceId == feedbackReq.ConferenceId &&
-                f.SpeakerId == feedbackReq.SpeakerId);
+            var speakerAttendedConference = _context.ConferenceXspeakers.Any(cs => cs.SpeakerId == feedbackReq.SpeakerId && cs.ConferenceId == feedbackReq.ConferenceId);
+            if (!speakerAttendedConference)
+            {
+                return BadRequest("The chosen speaker has not attended this conference!");
+            }
+            var existingFeedback = _context.Feedbacks.FirstOrDefault(f =>f.AttendeeEmail == feedbackReq.AttendeeEmail && f.ConferenceId == feedbackReq.ConferenceId && f.SpeakerId == feedbackReq.SpeakerId);
             if (existingFeedback != null)
             {
                 return Conflict("Your feedback was already registered, thank you!");
