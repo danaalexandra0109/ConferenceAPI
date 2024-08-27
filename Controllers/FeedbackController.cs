@@ -21,14 +21,13 @@ namespace ConferenceAPI.Controllers
         [HttpGet("GetFeedback")]
         public ActionResult GetAllItems()
         {
-            var feedbacks = _context.Feedbacks.ToList();
+            List<Feedback> feedbacks = _context.Feedbacks.ToList();
             return Ok(feedbacks);
         }
 
         [HttpPost("PostFeedback")]
         public ActionResult CreateFeedback([FromBody] FeedbackRequest feedbackReq)
         {
-            // Validate the request
             if (feedbackReq == null)
             {
                 return BadRequest("Please enter feedback!");
@@ -93,7 +92,6 @@ namespace ConferenceAPI.Controllers
                     _context.SaveChanges();
                 }
             }
-
             return Created(Url.ToString(), feedback);
         }
 
