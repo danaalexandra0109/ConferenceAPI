@@ -1,19 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace ConferenceAPI.Models;
-
-public partial class EmailNotification
+namespace ConferenceAPI.Models
 {
-    public int Id { get; set; }
+    public partial class EmailNotification : Notification
+    {
+        public string To { get; set; } = null!;
+        public string Cc { get; set; } = null!;
+        public string Subject { get; set; } = null!;
 
-    public string To { get; set; } = null!;
+        public EmailNotification(string participantName, string courseName, DateTime sentDate, string to, string cc, string subject)
+        {
+            Message = string.Format(ParticipantTemplate, participantName, courseName);
+            SentDate = sentDate;
 
-    public string Cc { get; set; } = null!;
+            To = to;
+            Cc = cc;
+            Subject = subject;
+        }
 
-    public string Subject { get; set; } = null!;
+        public EmailNotification(string speakerName, string conferenceName, DateTime conferenceDate, DateTime sentDate, string to, string cc, string subject)
+        {
+            Message = string.Format(SpeakerTemplate, speakerName, conferenceName, conferenceDate.ToShortDateString());
+            SentDate = sentDate;
 
-    public string Message { get; set; } = null!;
+            To = to;
+            Cc = cc;
+            Subject = subject;
+        }
 
-    public DateTime SentDate { get; set; }
+    }
 }

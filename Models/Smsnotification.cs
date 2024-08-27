@@ -1,15 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace ConferenceAPI.Models;
-
-public partial class Smsnotification
+namespace ConferenceAPI.Models
 {
-    public int Id { get; set; }
+    public partial class SmsNotification : Notification
+    {
+        public string PhoneNumber { get; set; } = null!;
 
-    public string PhoneNumber { get; set; } = null!;
+        public SmsNotification(string participantName, string courseName, DateTime sentDate, string phoneNumber)
+        {
+            Message = string.Format(ParticipantTemplate, participantName, courseName);
+            SentDate = sentDate;
 
-    public string Message { get; set; } = null!;
+            PhoneNumber = phoneNumber;
+        }
 
-    public DateTime SentDate { get; set; }
+        public SmsNotification(string speakerName, string conferenceName, DateTime conferenceDate, DateTime sentDate, string phoneNumber)
+        {
+            Message = string.Format(SpeakerTemplate, speakerName, conferenceName, conferenceDate.ToShortDateString());
+            SentDate = sentDate;
+
+            PhoneNumber = phoneNumber;
+        }
+    }
 }
