@@ -37,6 +37,22 @@ namespace ConferenceAPI.Controllers
             {
                 return BadRequest("Email required!");
             }
+            if (string.IsNullOrWhiteSpace(feedbackReq.SpeakerId.ToString()))
+            {
+                return BadRequest("Please input a Speaker!");
+            }
+            if (string.IsNullOrWhiteSpace(feedbackReq.ConferenceId.ToString()))
+            {
+                return BadRequest("Please input a Conference!");
+            }
+            if (feedbackReq.Rating == null)
+            {
+                return BadRequest("Please input your feedback rating for our speaker!");
+            }
+            if (string.IsNullOrWhiteSpace(feedbackReq.Message))
+            {
+                return BadRequest("Please help us improve!");
+            }
             var conferenceExists = _context.Conferences.Any(c => c.Id == feedbackReq.ConferenceId);
             if (!conferenceExists)
             {
@@ -47,15 +63,6 @@ namespace ConferenceAPI.Controllers
             {
                 return BadRequest("The selected speaker does not exist.");
             }
-            if (feedbackReq.Rating == null)
-            {
-                return BadRequest("Please input your feedback rating for our speaker!");
-            }
-            if (string.IsNullOrWhiteSpace(feedbackReq.Message))
-            {
-                return BadRequest("Please help us improve!");
-            }
-          
             var existingFeedback = _context.Feedbacks.FirstOrDefault(f =>
                 f.AttendeeEmail == feedbackReq.AttendeeEmail &&
                 f.ConferenceId == feedbackReq.ConferenceId &&
