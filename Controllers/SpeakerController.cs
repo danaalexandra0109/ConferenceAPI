@@ -19,32 +19,42 @@ namespace ConferenceAPI.Controllers
         [HttpGet("GetSpeaker")] 
         public ActionResult GetAllItems()
         {
-            var items = _context.Speakers.ToList();
-            return Ok(items);
+            var speakers = _context.Speakers.ToList();
+            return Ok(speakers);
         }
 
         [HttpPost("PostSpeaker")]
-        public ActionResult CreateSpeaker([FromBody] SpeakerRequest item)
+        public ActionResult CreateSpeaker([FromBody] SpeakerRequest speakerReq)
         {
-            if (item == null)
+            if (speakerReq == null)
             {
                 return BadRequest();
             }
-            if (item.Name == null)
+            if (speakerReq.Name == null)
             {
                 return BadRequest("Input Name!");
             }
-            if(item.PhoneNumber == null)
+            if(speakerReq.PhoneNumber == null)
             {
                 return BadRequest("Input Phone Number!");
             }
+            var existingSpeaker = _context.Speakers.FirstOrDefault(s => s.PhoneNumber == speakerReq.PhoneNumber);
+            if (existingSpeaker != null)
+            {
+                return Conflict("Phone number already in use!");
+            }
+            existingSpeaker = _context.Speakers.FirstOrDefault(s => s.Email == speakerReq.Email);
+            if (existingSpeaker != null)
+            {
+                return Conflict("Email already in use!");
+            }
             Speaker speaker = new Speaker
             {
-                Name = item.Name,
-                Nationality = item.Nationality,
-                Rating = item.Rating,
-                PhoneNumber = item.PhoneNumber,
-                Email = item.Email
+                Name = speakerReq.Name,
+                Nationality = speakerReq.Nationality,
+                Rating = speakerReq.Rating,
+                PhoneNumber = speakerReq.PhoneNumber,
+                Email = speakerReq.Email
             };
             _context.Speakers.Add(speaker);
             _context.SaveChanges();
@@ -66,12 +76,12 @@ namespace ConferenceAPI.Controllers
             {
                 return BadRequest("Input a valid value!");
             }
-            var existingItem = _context.Speakers.FirstOrDefault(i => i.Id == id);
-            if (existingItem == null)
+            var existingSpeaker = _context.Speakers.FirstOrDefault(i => i.Id == id);
+            if (existingSpeaker == null)
             {
                 return NotFound();
             }
-            existingItem.Rating = rating;
+            existingSpeaker.Rating = rating;
             _context.SaveChanges();
             return Ok();
         }
