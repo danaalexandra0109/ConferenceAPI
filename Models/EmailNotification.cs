@@ -19,10 +19,13 @@ namespace ConferenceAPI.Models
                                .Where(cs => cs.IsMainSpeaker)
                                .Select(cs => cs.Speaker)
                                .FirstOrDefault();
-            if(mainSpeaker == null)
-            {
-                mainSpeaker = conference.ConferenceXspeakers.Select(cs => cs.Speaker).FirstOrDefault();       
-            }
+            if  (mainSpeaker == null)
+                {
+                    mainSpeaker = conference.ConferenceXspeakers
+                        .Select(cs => cs.Speaker)
+                        .OrderByDescending(s => s.Rating) 
+                        .FirstOrDefault();
+                }
 
             Message = string.Format(ParticipantTemplate,
                                    attendee.Name,

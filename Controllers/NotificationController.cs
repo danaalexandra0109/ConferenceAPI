@@ -30,14 +30,32 @@ namespace ConferenceAPI.Controllers
                                 .Select(cxs => cxs.Speaker)
                                 .FirstOrDefault();
 
-            if (participant == null || conference == null || mainSpeaker == null)
+            if (participant == null) 
             {
-                return BadRequest("Invalid participant, conference, or speaker information.");
+                return BadRequest("Invalid participant.");
             }
+
+            if(conference == null)
+            {
+                return BadRequest("Invalid conference.");
+            }
+
+            var conferenceExists = _context.Conferences.Any(c => c.Id == request.ConferenceId);
+            if (!conferenceExists)
+            {
+                return BadRequest("Invalid conference ID.");
+            }
+
+            if (mainSpeaker == null)
+            {
+                return BadRequest("No speaker for conference");
+            }
+
+           
 
             var emailNotification = new EmailNotification(participant, conference);
 
-            _manager.SendNotification(emailNotification);
+                _manager.SendNotification(emailNotification);
             return Ok("Participant email notification sent successfully.");
         }
 
@@ -47,10 +65,38 @@ namespace ConferenceAPI.Controllers
             var speaker = _context.Speakers.FirstOrDefault(s => s.Id == request.ReciverId);
             var conference = _context.Conferences.Include(c => c.Location).FirstOrDefault(c => c.Id == request.ConferenceId);
 
-            if (speaker == null || conference == null)
+            if (conference == null)
             {
-                return BadRequest("Invalid speaker or conference information.");
+                return BadRequest("Invalid conference information.");
             }
+
+            var hasAttended = _context.ConferenceXspeakers.Any(a => a.ConferenceId == conference.Id && a.SpeakerId == speaker.Id);
+
+            // Check if speaker is null or has not attended the conference
+            if (speaker == null)
+            {
+                return BadRequest("Invalid speaker.");
+            }
+
+            if (!hasAttended)
+            {
+                //// Add the speaker to ConferenceXattendee if they haven't attended
+
+                //var speakerReq = new ConferenceXspeakerRequest
+                //{
+                //    SpeakerId = speaker.Id,
+                //    ConferenceId = conference.Id
+                //};
+                var newSpeaker = new ConferenceXspeaker
+                {
+                    SpeakerId = speaker.Id,
+                    ConferenceId = conference.Id
+                };
+
+                _context.ConferenceXspeakers.Add(newSpeaker);
+                _context.SaveChanges(); // Save changes to the database
+            }
+
 
             var emailNotification = new EmailNotification(speaker, conference);
 
