@@ -14,6 +14,7 @@ namespace ConferenceAPI.Models
         public EmailNotification(ConferenceXattendee attendee, Conference conference)
         {
             To = attendee.AttendeeEmail;
+            Cc = conference.OrganizerEmail;
             Subject = $"Enrollment Confirmation for {conference.Name}";
             var mainSpeaker = conference.ConferenceXspeakers
                                .Where(cs => cs.IsMainSpeaker)
@@ -40,6 +41,7 @@ namespace ConferenceAPI.Models
         public EmailNotification(Speaker speaker, Conference conference)
         {
             To = speaker.Email;
+            Cc = conference.OrganizerEmail;
             Subject = $"Speaking Engagement at {conference.Name}";
             Message = string.Format(SpeakerTemplate,
                                     speaker.Name,
