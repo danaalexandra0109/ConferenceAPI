@@ -8,35 +8,20 @@ namespace ConferenceAPI.Services
     {
         public void Send(Notification notification)
         {
-            [HttpPost("SendParticipantSmsNotification")]
-            public IActionResult SendParticipantSmsNotification([FromBody] SendParticipantSmsRequest request)
+            // Ensure the notification is of type SmsNotification
+            if (notification is SmsNotification smsNotification)
             {
-                var notification = new SmsNotification
-                {
-                    PhoneNumber = request.ParticipantPhoneNumber,
-                    Message = string.Format(Notification.ParticipantTemplate, request.ParticipantPhoneNumber, request.CourseName),
-                    SentDate = DateTime.Now
-                };
+                // Here, you would implement the logic to send the SMS
+                // For now, we'll just simulate it with a console output or log
 
-                _manager.Send(notification);
-
-                return Ok("Participant SMS notification sent.");
+                Console.WriteLine($"Sending SMS to: {smsNotification.PhoneNumber}");
+                Console.WriteLine($"Message: {smsNotification.Message}");
             }
-
-            [HttpPost("SendSpeakerSmsNotification")]
-            public IActionResult SendSpeakerSmsNotification([FromBody] SendSpeakerSmsRequest request)
+            else
             {
-                var notification = new SmsNotification
-                {
-                    PhoneNumber = request.SpeakerPhoneNumber,
-                    Message = string.Format(Notification.SpeakerTemplate, request.SpeakerPhoneNumber, request.ConferenceName),
-                    SentDate = DateTime.Now
-                };
-
-                _manager.Send(notification);
-
-                return Ok("Speaker SMS notification sent.");
+                throw new InvalidOperationException("Notification must be of type SmsNotification.");
             }
         }
     }
 }
+

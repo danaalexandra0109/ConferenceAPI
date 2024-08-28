@@ -6,32 +6,27 @@ namespace ConferenceAPI.Services
 {
     public class NotificationManager
     {
-        // A readonly dictionary to store the notification services
-        private readonly Dictionary<Type, INotificationService> _services;
+        // Dictionary to map notification types to their respective services
+        public readonly Dictionary<Type, INotificationService> _services;
 
-        // Constructor to initialize the dictionary with available services
+        // Constructor to initialize the dictionary with service instances
         public NotificationManager()
         {
             _services = new Dictionary<Type, INotificationService>
-    {
-        { typeof(EmailNotification), new EmailService() },
-        { typeof(SmsNotification), new SMSService() }
-    };
-        }
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddTransient<INotificationService, EmailService>();
-            services.AddTransient<INotificationService, SMSService>();
-            services.AddSingleton<NotificationManager>();
+            {
+                { typeof(EmailNotification), new EmailService() }, // Correct service instance
+                { typeof(SmsNotification), new SMSService() }      // Correct service instance
+            };
         }
 
-
-        // Method to send a notification based on its type
+        // Method to send the notification using the appropriate service
         public void SendNotification(Notification notification)
         {
             var type = notification.GetType();
+
             if (_services.ContainsKey(type))
             {
+                // Use the service to send the notification
                 _services[type].Send(notification);
             }
             else

@@ -1,45 +1,68 @@
-﻿using ConferenceAPI.Models;
-using ConferenceAPI.Requests;
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Net;
+using System.Net.Mail;
+using ConferenceAPI.Models;
 
 namespace ConferenceAPI.Services
 {
     public class EmailService : INotificationService
     {
+        public SmtpClient _smtpClient;
+        public string _senderEmail;
+
+        public EmailService()
+        {
+            // You should ideally get these from a configuration file
+            _smtpClient = new SmtpClient("localhost")
+            {
+                Port = 25, // SMTP port number
+                Credentials = new NetworkCredential("notification.system@conferences.com", "#Cookie0109"),
+                EnableSsl = false,
+            };
+
+            _senderEmail = "notification.system@conferences.com"; // Your email address used as sender
+        }
+
         public void Send(Notification notification)
         {
-            [HttpPost("SendParticipantEmailNotification")]
-            public IActionResult SendParticipantEmailNotification([FromBody] SendParticipantEmailRequest request)
+            // Ensure the notification is of type EmailNotification
+            if (notification is EmailNotification emailNotification)
             {
-                var notification = new EmailNotification
+                try
                 {
-                    To = request.ParticipantEmail,
-                    Cc = request.Cc,
-                    Subject = request.Subject,
-                    Message = string.Format(Notification.ParticipantTemplate, request.ParticipantEmail, request.CourseName),
-                    SentDate = DateTime.Now
-                };
+                    // Create the MailMessage object
+                    var mailMessage = new MailMessage
+                    {
+                        From = new MailAddress(_senderEmail),
+                        Subject = emailNotification.Subject,
+                        Body = emailNotification.Message,
+                        IsBodyHtml = true, // Set to true if the email body contains HTML
+                    };
 
-                _manager.Send(notification);
+                    // Add recipient(s)
+                    mailMessage.To.Add(emailNotification.To);
 
-                return Ok("Participant email notification sent.");
+                    // Add CC(s) if provided
+                    if (!string.IsNullOrEmpty(emailNotification.Cc))
+                    {
+                        mailMessage.CC.Add(emailNotification.Cc);
+                    }
+
+                    // Send the email
+                    _smtpClient.Send(mailMessage);
+
+                    Console.WriteLine($"Email sent to: {emailNotification.To}");
+                }
+                catch (Exception ex)
+                {
+                    // Handle errors (e.g., log the exception)
+                    Console.WriteLine($"Failed to send email: {ex.Message}");
+                    throw;
+                }
             }
-
-            [HttpPost("SendSpeakerEmailNotification")]
-            public IActionResult SendSpeakerEmailNotification([FromBody] SendSpeakerEmailRequest request)
+            else
             {
-                var notification = new EmailNotification
-                {
-                    To = request.SpeakerEmail,
-                    Cc = request.Cc,
-                    Subject = request.Subject,
-                    Message = string.Format(Notification.SpeakerTemplate, request.SpeakerEmail, request.ConferenceName),
-                    SentDate = DateTime.Now
-                };
-
-                _manager.Send(notification);
-
-                return Ok("Speaker email notification sent.");
+                throw new InvalidOperationException("Notification must be of type EmailNotification.");
             }
         }
     }

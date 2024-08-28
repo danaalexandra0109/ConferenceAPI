@@ -11,7 +11,7 @@ public partial class ConferenceXspeaker
 
     public int SpeakerId { get; set; }
 
-    public bool? IsMainSpeaker { get; set; }
+    public bool IsMainSpeaker { get; set; }
 
     public virtual Conference Conference { get; set; } = null!;
 

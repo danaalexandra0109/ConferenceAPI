@@ -42,7 +42,7 @@ public partial class DanaBazaDeDateContext : DbContext
 
     public virtual DbSet<Log> Logs { get; set; }
 
-    public virtual DbSet<Smsnotification> Smsnotifications { get; set; }
+    public virtual DbSet<SmsNotification> Smsnotifications { get; set; }
 
     public virtual DbSet<Speaker> Speakers { get; set; }
 
@@ -230,7 +230,7 @@ public partial class DanaBazaDeDateContext : DbContext
             entity.Property(e => e.TimeStamp).HasColumnType("datetime");
         });
 
-        modelBuilder.Entity<Smsnotification>(entity =>
+        modelBuilder.Entity<SmsNotification>(entity =>
         {
             entity
                 .HasNoKey()

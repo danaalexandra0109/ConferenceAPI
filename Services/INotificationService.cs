@@ -4,6 +4,6 @@ namespace ConferenceAPI.Services
 {
     public interface INotificationService
     {
-        public void Send(Notification notification);
+        void Send(Notification notification);
     }
 }

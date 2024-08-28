@@ -6,20 +6,36 @@ namespace ConferenceAPI.Models
     {
         public string PhoneNumber { get; set; } = null!;
 
-        public SmsNotification(string participantName, string courseName, DateTime sentDate, string phoneNumber)
+        public SmsNotification()
         {
-            Message = string.Format(ParticipantTemplate, participantName, courseName);
-            SentDate = sentDate;
-
-            PhoneNumber = phoneNumber;
+        }
+        public SmsNotification(ConferenceXattendee attendee, Conference conference)
+        {
+            PhoneNumber = attendee.PhoneNumber;
+            var mainSpeaker = conference.ConferenceXspeakers
+                               .Where(cs => cs.IsMainSpeaker)
+                               .Select(cs => cs.Speaker)
+                               .FirstOrDefault();
+            Message = string.Format(ParticipantTemplate,
+                                    attendee.Name,
+                                    conference.Name,
+                                    mainSpeaker?.Name ?? "N/A",
+                                    conference.StartDate.ToShortDateString(),
+                                    conference.StartDate.ToShortTimeString(),
+                                    conference.Location);
+            SentDate = DateTime.Now;
         }
 
-        public SmsNotification(string speakerName, string conferenceName, DateTime conferenceDate, DateTime sentDate, string phoneNumber)
+        public SmsNotification(Speaker speaker, Conference conference)
         {
-            Message = string.Format(SpeakerTemplate, speakerName, conferenceName, conferenceDate.ToShortDateString());
-            SentDate = sentDate;
-
-            PhoneNumber = phoneNumber;
+            PhoneNumber = speaker.PhoneNumber;
+            Message = string.Format(SpeakerTemplate,
+                                    speaker.Name,
+                                    conference.Name,
+                                    conference.StartDate.ToShortDateString(),
+                                    conference.StartDate.ToShortTimeString(),
+                                    conference.Location);
+            SentDate = DateTime.Now;
         }
     }
 }

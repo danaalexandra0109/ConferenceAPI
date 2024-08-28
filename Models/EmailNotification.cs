@@ -8,25 +8,43 @@ namespace ConferenceAPI.Models
         public string Cc { get; set; } = null!;
         public string Subject { get; set; } = null!;
 
-        public EmailNotification(string participantName, string courseName, DateTime sentDate, string to, string cc, string subject)
+        public EmailNotification()
         {
-            Message = string.Format(ParticipantTemplate, participantName, courseName);
-            SentDate = sentDate;
+        }
+        public EmailNotification(ConferenceXattendee attendee, Conference conference)
+        {
+            To = attendee.AttendeeEmail;
+            Subject = $"Enrollment Confirmation for {conference.Name}";
+            var mainSpeaker = conference.ConferenceXspeakers
+                               .Where(cs => cs.IsMainSpeaker)
+                               .Select(cs => cs.Speaker)
+                               .FirstOrDefault();
+            if(mainSpeaker == null)
+            {
+                mainSpeaker = conference.ConferenceXspeakers.Select(cs => cs.Speaker).FirstOrDefault();       
+            }
 
-            To = to;
-            Cc = cc;
-            Subject = subject;
+            Message = string.Format(ParticipantTemplate,
+                                   attendee.Name,
+                                   conference.Name,
+                                   mainSpeaker.Name,
+                                   conference.StartDate.ToShortDateString(),
+                                   conference.StartDate.ToShortTimeString(),
+                                   conference.Location.Name);
+            SentDate = DateTime.Now;
         }
 
-        public EmailNotification(string speakerName, string conferenceName, DateTime conferenceDate, DateTime sentDate, string to, string cc, string subject)
+        public EmailNotification(Speaker speaker, Conference conference)
         {
-            Message = string.Format(SpeakerTemplate, speakerName, conferenceName, conferenceDate.ToShortDateString());
-            SentDate = sentDate;
-
-            To = to;
-            Cc = cc;
-            Subject = subject;
+            To = speaker.Email;
+            Subject = $"Speaking Engagement at {conference.Name}";
+            Message = string.Format(SpeakerTemplate,
+                                    speaker.Name,
+                                    conference.Name,
+                                    conference.StartDate.ToShortDateString(),
+                                    conference.StartDate.ToShortTimeString(),
+                                    conference.Location.Name);
+            SentDate = DateTime.Now;
         }
-
     }
 }
