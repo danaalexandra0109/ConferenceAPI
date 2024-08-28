@@ -80,13 +80,6 @@ namespace ConferenceAPI.Controllers
 
             if (!hasAttended)
             {
-                //// Add the speaker to ConferenceXattendee if they haven't attended
-
-                //var speakerReq = new ConferenceXspeakerRequest
-                //{
-                //    SpeakerId = speaker.Id,
-                //    ConferenceId = conference.Id
-                //};
                 var newSpeaker = new ConferenceXspeaker
                 {
                     SpeakerId = speaker.Id,
