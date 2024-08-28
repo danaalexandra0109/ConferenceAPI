@@ -51,8 +51,6 @@ namespace ConferenceAPI.Controllers
                 return BadRequest("No speaker for conference");
             }
 
-           
-
             var emailNotification = new EmailNotification(participant, conference);
 
                 _manager.SendNotification(emailNotification);
