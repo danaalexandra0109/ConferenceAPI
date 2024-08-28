@@ -16,13 +16,21 @@ namespace ConferenceAPI.Models
                                .Where(cs => cs.IsMainSpeaker)
                                .Select(cs => cs.Speaker)
                                .FirstOrDefault();
+            if (mainSpeaker == null)
+            {
+                mainSpeaker = conference.ConferenceXspeakers
+                    .Select(cs => cs.Speaker)
+                    .OrderByDescending(s => s.Rating)
+                    .FirstOrDefault();
+            }
+
             Message = string.Format(ParticipantTemplate,
-                                    attendee.Name,
-                                    conference.Name,
-                                    mainSpeaker?.Name ?? "N/A",
-                                    conference.StartDate.ToShortDateString(),
-                                    conference.StartDate.ToShortTimeString(),
-                                    conference.Location);
+                                   attendee.Name,
+                                   conference.Name,
+                                   mainSpeaker.Name,
+                                   conference.StartDate.ToShortDateString(),
+                                   conference.StartDate.ToShortTimeString(),
+                                   conference.Location.Name);
             SentDate = DateTime.Now;
         }
 
@@ -34,7 +42,7 @@ namespace ConferenceAPI.Models
                                     conference.Name,
                                     conference.StartDate.ToShortDateString(),
                                     conference.StartDate.ToShortTimeString(),
-                                    conference.Location);
+                                    conference.Location.Name);
             SentDate = DateTime.Now;
         }
     }
