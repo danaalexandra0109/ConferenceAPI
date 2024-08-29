@@ -11,7 +11,7 @@ namespace ConferenceAPI.Models
         }
         public SmsNotification(ConferenceXattendee attendee, Conference conference)
         {
-            PhoneNumber = attendee.PhoneNumber;
+            PhoneNumber = $"+40{attendee.PhoneNumber}";
             var mainSpeaker = conference.ConferenceXspeakers
                                .Where(cs => cs.IsMainSpeaker)
                                .Select(cs => cs.Speaker)
@@ -36,7 +36,7 @@ namespace ConferenceAPI.Models
 
         public SmsNotification(Speaker speaker, Conference conference)
         {
-            PhoneNumber = speaker.PhoneNumber;
+            PhoneNumber = $"+40{speaker.PhoneNumber}";
             Message = string.Format(SpeakerTemplate,
                                     speaker.Name,
                                     conference.Name,
