@@ -53,10 +53,14 @@ namespace ConferenceAPI.Controllers
 
             var emailNotification = new EmailNotification(participant, conference);
 
-                _manager.SendNotification(emailNotification);
+            _context.EmailNotifications.Add(emailNotification);
+            _context.SaveChanges();
+
+            _manager.SendNotification(emailNotification);
             return Ok("Participant email notification sent successfully.");
 
-            //adauga metoda de adaugare in tabela EmailNotification
+
+            
         }
 
         [HttpPost("SendSpeakerEmailNotification")]
@@ -98,6 +102,10 @@ namespace ConferenceAPI.Controllers
 
             var emailNotification = new EmailNotification(speaker, conference);
 
+
+            _context.EmailNotifications.Add(emailNotification);
+            _context.SaveChanges();
+
             _manager.SendNotification(emailNotification);
             return Ok("Speaker email notification sent successfully.");
         }
@@ -136,13 +144,16 @@ namespace ConferenceAPI.Controllers
 
             var smsNotification = new SmsNotification(participant, conference);
 
+            _context.Smsnotifications.Add(smsNotification);
+            _context.SaveChanges();
+
             _manager.SendNotification(smsNotification);
             return Ok("Participant sms notification sent successfully.");
 
             //adauga metoda de adaugare in tabela EmailNotification
         }
 
-        [HttpPost("SendSpeakerEmailNotification")]
+        [HttpPost("SendSpeakerSmsNotification")]
         public IActionResult SendSpeakerSmsNotification([FromBody] NotificationRequest request)
         {
             var speaker = _context.Speakers.FirstOrDefault(s => s.Id == request.ReciverId);
@@ -181,8 +192,12 @@ namespace ConferenceAPI.Controllers
 
             var smsNotification = new SmsNotification(speaker, conference);
 
+            _context.Smsnotifications.Add(smsNotification);
+            _context.SaveChanges();
+
+
             _manager.SendNotification(smsNotification);
-            return Ok("Speaker email notification sent successfully.");
+            return Ok("Speaker sms notification sent successfully.");
         }
         //adauga metoda de adaugare in EmailNotification
 

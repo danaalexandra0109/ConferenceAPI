@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 namespace ConferenceAPI.Models;
 
@@ -18,11 +17,7 @@ public partial class Feedback
 
     public string? Message { get; set; }
 
-    [JsonIgnore]
-
     public virtual Conference Conference { get; set; } = null!;
-    
-    [JsonIgnore]
 
     public virtual Speaker Speaker { get; set; } = null!;
 }
