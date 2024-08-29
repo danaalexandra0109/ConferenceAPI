@@ -58,8 +58,10 @@ public partial class DanaBazaDeDateContext : DbContext
         {
             entity.ToTable("Conference");
 
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.OrganizerEmail).HasMaxLength(50);
+            entity.Property(e => e.StartDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Conferences)
                 .HasForeignKey(d => d.CategoryId)
@@ -161,12 +163,11 @@ public partial class DanaBazaDeDateContext : DbContext
 
         modelBuilder.Entity<EmailNotification>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("EmailNotification");
+            entity.HasKey(e => e.Id).HasName("PK__EmailNot__3214EC07648DE154");
+
+            entity.ToTable("EmailNotification");
 
             entity.Property(e => e.Cc).HasMaxLength(50);
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
             entity.Property(e => e.Message).HasMaxLength(4000);
             entity.Property(e => e.SentDate).HasColumnType("datetime");
             entity.Property(e => e.Subject).HasMaxLength(1000);
@@ -232,11 +233,10 @@ public partial class DanaBazaDeDateContext : DbContext
 
         modelBuilder.Entity<SmsNotification>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("SMSNotification");
+            entity.HasKey(e => e.Id).HasName("PK__SMSNotif__3214EC0703C9200D");
 
-            entity.Property(e => e.Id).ValueGeneratedOnAdd();
+            entity.ToTable("SMSNotification");
+
             entity.Property(e => e.Message).HasMaxLength(4000);
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(10)
