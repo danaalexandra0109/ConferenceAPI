@@ -11,7 +11,7 @@ namespace ConferenceAPI.Controllers
     [ApiController]
     public class FeedbackController : ControllerBase
     {
-        private readonly DanaBazaDeDateContext _context;
+        public DanaBazaDeDateContext _context;
 
         public FeedbackController(DanaBazaDeDateContext context)
         {
