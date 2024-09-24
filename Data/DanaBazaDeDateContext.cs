@@ -22,6 +22,8 @@ public partial class DanaBazaDeDateContext : DbContext
 
     public virtual DbSet<ConferenceXspeaker> ConferenceXspeakers { get; set; }
 
+    public virtual DbSet<Departaments> Departamens { get; set; }
+
     public virtual DbSet<DictionaryCategory> DictionaryCategories { get; set; }
 
     public virtual DbSet<DictionaryCity> DictionaryCities { get; set; }
@@ -111,6 +113,14 @@ public partial class DanaBazaDeDateContext : DbContext
                 .HasForeignKey(d => d.SpeakerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ConferenceXSpeaker_Speaker");
+        });
+
+        modelBuilder.Entity<Departaments>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Departam__3214EC07FD88094E");
+
+            entity.Property(e => e.Code).HasMaxLength(128);
+            entity.Property(e => e.Name).HasMaxLength(50);
         });
 
         modelBuilder.Entity<DictionaryCategory>(entity =>

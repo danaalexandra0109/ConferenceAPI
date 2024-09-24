@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ConferenceAPI.Models;
 
@@ -21,7 +22,11 @@ public partial class Conference
 
     public string Name { get; set; } = null!;
 
+    [JsonIgnore]
+
     public virtual DictionaryCategory Category { get; set; } = null!;
+
+    [JsonIgnore]
 
     public virtual DictionaryConferenceType ConferenceType { get; set; } = null!;
 
