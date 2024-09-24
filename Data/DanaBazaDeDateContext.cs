@@ -22,7 +22,7 @@ public partial class DanaBazaDeDateContext : DbContext
 
     public virtual DbSet<ConferenceXspeaker> ConferenceXspeakers { get; set; }
 
-    public virtual DbSet<Departaments> Departamens { get; set; }
+    public virtual DbSet<Departaments> Departaments { get; set; }
 
     public virtual DbSet<DictionaryCategory> DictionaryCategories { get; set; }
 
