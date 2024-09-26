@@ -80,25 +80,29 @@ namespace ConferenceAPI.Controllers
 
             if (departamentsRequest.Name == null)
             {
+                //departamentsRequest.Name = existingDepartament.Name;
                 return BadRequest("Input Name");
             }
 
             if (departamentsRequest.Code == null)
             {
+                //departamentsRequest.Code = existingDepartament.Code;
                 return BadRequest("Input Code");
             }
 
             if (departamentsRequest.Description == null)
             {
+                //departamentsRequest.Description = existingDepartament.Description;
                 return BadRequest("Input Description");
             }
 
             if (string.IsNullOrWhiteSpace(departamentsRequest.Employees.ToString()))
             {
+                //departamentsRequest.Employees= existingDepartament.Employees;
                 return BadRequest("Input number of employees for departament");
             }
 
-            if(existingDepartament == null)
+            if (existingDepartament == null)
             {
                 return NotFound("Departament not found");
             }
