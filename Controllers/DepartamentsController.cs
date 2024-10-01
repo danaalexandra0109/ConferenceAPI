@@ -22,6 +22,17 @@ namespace ConferenceAPI.Controllers
             return Ok(departaments);
         }
 
+        [HttpGet("get-departament/{id}")]
+        public ActionResult GetDepartament(int id)
+        {
+            var department = _context.Departaments.Find(id); 
+            if (department == null)
+            {
+                return NotFound("Department not found"); 
+            }
+            return Ok(department); 
+        }
+
         [HttpPost("post-departament")]
         public ActionResult CreateDepartament([FromBody] DepartamentsRequest departamentsRequest)
         {
@@ -69,7 +80,7 @@ namespace ConferenceAPI.Controllers
             return Ok("Departament created");
         }
 
-        [HttpPut("put-departament{id}")]
+        [HttpPut("put-departament/{id}")]
         public ActionResult UpdateDepartament(int id, [FromBody] DepartamentsRequest departamentsRequest)
         {
             var existingDepartament = _context.Departaments.FirstOrDefault(dep => dep.Id == id);
@@ -115,7 +126,7 @@ namespace ConferenceAPI.Controllers
             return Ok("Update succesfull");
         }
 
-        [HttpDelete("delete-departament{id}")]
+        [HttpDelete("delete-departament/{id}")]
         public IActionResult DeleteDepartament(int id)
         {
             var foundDepartament = _context.Departaments.FirstOrDefault(i => i.Id == id);
