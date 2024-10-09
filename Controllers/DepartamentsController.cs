@@ -1,6 +1,5 @@
 ﻿using ConferenceAPI.Data;
 using ConferenceAPI.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ConferenceAPI.Controllers
